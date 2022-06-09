@@ -36,3 +36,4 @@ if isMonth
 
 if marketposition < 0 and time = endtime then buytocover next bar at market;
 		
+// prova inserimento commento	
