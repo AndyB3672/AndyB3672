@@ -1,0 +1,38 @@
+// ///////////////////////////////////////////////////////////////////////////////////// 	
+// **********************   .LIVE NQ Bias3STREGHE 60m ID 202109 ************************ 	
+// ****************************  Code by Nicola Gussetti  ****************************** 	
+// ************************   riottimizzato dal Gruppo Elite  ************************** 	
+// ************************************************************************************* 	
+// DATA1:			NQ (MINI NASDAQ) , 60M										
+// OPERATIVITA':		INTRADAY 										     	
+// INGRESSI:		SHORT												
+// TRIGGER:			Short sessione cash del 3 venerd di ogni trimestre							
+// FILTRI ORARI:		 				     								
+// STRATEGY SETTINGS:	Maximum number of bars study reference: 50					
+// CHART SETTINGS:	Days back: 50										
+// OOS:			2021-09											
+// //////////////////////////////////////////////////////////////////////////////////////	
+
+
+inputs: 
+	MyContracts(1),
+	starttime(800),
+	endtime(1500);
+
+vars: 
+	isMonth(false),
+	FridayCont(0);
+
+isMonth = mod(month(date),3)=0; 
+
+if isMonth = false then FridayCont = 0
+else if sessionlastbar and dayofweek(date) = 4 then FridayCont = FridayCont+1; 
+
+if isMonth
+	and dayofweek(date) = 5
+	and FridayCont = 3
+	and time = starttime
+	then sellshort MyContracts contract next bar at market;
+
+if marketposition < 0 and time = endtime then buytocover next bar at market;
+		
